@@ -28,7 +28,7 @@ export default function NavBar({ session }) {
               height="30"
               className="mr-2 rounded-sm"
             ></Image>
-            <p>My First Project</p>
+            <p>AI Date Assistant</p>
           </Link>
           <div>
             {session ? (
