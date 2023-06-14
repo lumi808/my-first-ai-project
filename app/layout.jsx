@@ -7,7 +7,7 @@ import Nav from "@/components/layout/nav";
 import { Suspense } from "react";
 
 export const metadata = {
-  title: "My First Project",
+  title: "AI Date Assistant",
   description:
     "Meet your AI Jeopardy expert.",
   themeColor: "#FFF",
