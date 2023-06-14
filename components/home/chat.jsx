@@ -13,7 +13,7 @@ import toast, { Toaster } from 'react-hot-toast'
 export const initialMessages = [
   {
     role: 'assistant',
-    content: 'Hi! I am a Jeopardy expert. Fire away with trivia questions!',
+    content: "Hi! I am a Date Assistant. Tell me about your and your partner's preferences. Also it would be helpful to specify your budget and stage of relationship with your partner.",
   },
 ]
 
