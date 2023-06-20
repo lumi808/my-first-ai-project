@@ -8,7 +8,7 @@ import cx from 'classnames'
 import { AcademicCapIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
-
+import { Buttons } from './option-buttons' 
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages = [
   {
@@ -28,22 +28,8 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
 
   const generateJeopardyQuestion = async () => {
     setIsGeneratingQuestion(true)
-    setQuestionError(null)
-
-    try {
-      const res = await axios.get('/api/question')
-      if (!res.data) {
-        throw new Error('No question was found in the response.')
-      }
-      const question_data = res.data
-
-      setQuestion(question_data)
-      setInput(`I like walking in parks, while my girlfriend enjoys restaraunts. My budget for the date is 100 dollars.`)
-    } catch (err) {
-      setQuestionError(err.message)
-    } finally {
-      setIsGeneratingQuestion(false)
-    }
+    setInput(`I like walking in parks, while my girlfriend enjoys restaraunts. My budget for the date is 100 dollars.`)
+    setIsGeneratingQuestion(false)
   }
 
   useEffect(() => {
@@ -60,9 +46,15 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
     }
   }, [questionError])
 
+  const [showOptionButtons, setShowOptionButtons] = useState(false)
+
+  const handleWordFound = () => {
+    setShowOptionButtons(true);
+  }
+
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-b from-transparent via-white to-white flex flex-col items-center clear-both">
-      <button
+      {!showOptionButtons ? (<button
         className="mx-auto flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black text-sm hover:opacity-50 disabled:opacity-25"
         onClick={generateJeopardyQuestion}
         disabled={isGeneratingQuestion}
@@ -70,7 +62,9 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
         <div className="w-4 h-4">
           <AcademicCapIcon />
         </div> {'Generate a Sample question for me'}
-      </button>
+      </button>):
+      (<Buttons/>)}
+
       <div className="mx-2 my-4 flex-1 w-full md:mx-4 md:mb-[52px] lg:max-w-2xl xl:max-w-3xl">
         <div className="relative mx-2 flex-1 flex-col rounded-md border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] sm:mx-4">
           <input

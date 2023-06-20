@@ -9,7 +9,7 @@ import { Suspense } from "react";
 export const metadata = {
   title: "AI Date Assistant",
   description:
-    "Meet your AI Jeopardy expert.",
+    "Meet your AI Date expert.",
   themeColor: "#FFF",
 };
 
