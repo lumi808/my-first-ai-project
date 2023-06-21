@@ -17,7 +17,9 @@ export const initialMessages = [
   },
 ]
 
-const InputMessage = ({ input, setInput, sendMessage, loading }) => {
+
+
+const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons }) => {
   const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false)
   const [question, setQuestion] = useState(null)
   const [questionError, setQuestionError] = useState(null)
@@ -28,7 +30,7 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
 
   const generateJeopardyQuestion = async () => {
     setIsGeneratingQuestion(true)
-    setInput(`I like walking in parks, while my girlfriend enjoys restaraunts. My budget for the date is 100 dollars.`)
+    setInput(`I like walking in parks, while my girlfriend enjoys restaraunts. My budget for the date is 100 dollars. We are couple`)
     setIsGeneratingQuestion(false)
   }
 
@@ -46,11 +48,8 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
     }
   }, [questionError])
 
-  const [showOptionButtons, setShowOptionButtons] = useState(false)
 
-  const handleWordFound = () => {
-    setShowOptionButtons(true);
-  }
+
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-b from-transparent via-white to-white flex flex-col items-center clear-both">
@@ -123,7 +122,7 @@ const useMessages = () => {
     const newMessages = [
       ...messages,
       { role: 'user', content: newMessage },
-    ]
+    ] 
     setMessages(newMessages)
     const last10messages = newMessages.slice(-10) // remember last 10 messages
 
@@ -161,14 +160,12 @@ const useMessages = () => {
     let done = false
 
     let lastMessage = ''
-
     while (!done) {
       const { value, done: doneReading } = await reader.read()
       done = doneReading
       const chunkValue = decoder.decode(value)
 
       lastMessage = lastMessage + chunkValue
-
       setMessages([
         ...newMessages,
         { role: 'assistant', content: lastMessage },
@@ -194,7 +191,19 @@ export default function Chat() {
   const [autoScrollEnabled, setAutoScrollEnabled] = useState(true);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const [showOptionButtons, setOptionButtons] = useState(false)
   const { messages, isMessageStreaming, loading, error, sendMessage } = useMessages()
+
+  const [foundWord, setFoundWord] = useState(false); // State variable for foundWord
+  const wordsToSearch = 'Option';
+
+  useEffect(() => {
+    if (!foundWord && messages.some((message) => message.content.includes(wordsToSearch))) {
+      console.log('FOUND OPTIONS IN RESPONSE');
+      setOptionButtons(true)
+      setFoundWord(true); // Update the state variable to true
+    }
+  }, [messages, foundWord, wordsToSearch]);
 
   const handleScroll = () => {
     if (chatContainerRef.current) {
@@ -236,7 +245,8 @@ export default function Chat() {
       >
         {messages.map(({ content, role }, index) => (
           <ChatLine key={index} role={role} content={content} isStreaming={index === messages.length - 1 && isMessageStreaming} />
-        ))}
+        ))
+        }
 
         {loading && <LoadingChatLine />}
 
@@ -249,6 +259,7 @@ export default function Chat() {
           setInput={setInput}
           sendMessage={sendMessage}
           isLoading={loading || isMessageStreaming}
+          showOptionButtons = {showOptionButtons}
         />
       </div>
       <Toaster />
