@@ -19,7 +19,7 @@ export const initialMessages = [
 
 
 
-const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons }) => {
+const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons, setOptionButtons }) => {
   const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false)
   const [question, setQuestion] = useState(null)
   const [questionError, setQuestionError] = useState(null)
@@ -62,7 +62,7 @@ const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons
           <AcademicCapIcon />
         </div> {'Generate a Sample question for me'}
       </button>):
-      (<Buttons/>)}
+      (<Buttons setOptionButtons = {setOptionButtons} sendMessage = {sendMessage}/>)}
 
       <div className="mx-2 my-4 flex-1 w-full md:mx-4 md:mb-[52px] lg:max-w-2xl xl:max-w-3xl">
         <div className="relative mx-2 flex-1 flex-col rounded-md border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] sm:mx-4">
@@ -260,6 +260,7 @@ export default function Chat() {
           sendMessage={sendMessage}
           isLoading={loading || isMessageStreaming}
           showOptionButtons = {showOptionButtons}
+          setOptionButtons = {setOptionButtons}
         />
       </div>
       <Toaster />
