@@ -8,7 +8,7 @@ import cx from 'classnames'
 import { AcademicCapIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
-import { Buttons } from './option-buttons' 
+import Buttons from "@/components/home/option-buttons" 
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages = [
   {
@@ -19,7 +19,7 @@ export const initialMessages = [
 
 
 
-const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons, setOptionButtons }) => {
+const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons, setOptionButtons, places, handleAdditionalMessage}) => {
   const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false)
   const [question, setQuestion] = useState(null)
   const [questionError, setQuestionError] = useState(null)
@@ -62,7 +62,7 @@ const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons
           <AcademicCapIcon />
         </div> {'Generate a Sample question for me'}
       </button>):
-      (<Buttons setOptionButtons = {setOptionButtons} sendMessage = {sendMessage}/>)}
+      (<Buttons setOptionButtons = {setOptionButtons} sendMessage = {sendMessage} places={places} handleAdditionalMessage={handleAdditionalMessage}/>)}
 
       <div className="mx-2 my-4 flex-1 w-full md:mx-4 md:mb-[52px] lg:max-w-2xl xl:max-w-3xl">
         <div className="relative mx-2 flex-1 flex-col rounded-md border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] sm:mx-4">
@@ -114,6 +114,32 @@ const useMessages = () => {
   const [isMessageStreaming, setIsMessageStreaming] = useState(false);
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null);
+  const [fplaces, setFplaces] = useState(null);
+  const [additionalMessage, setAdditionalMessage] = useState('');
+
+  const handleAdditionalMessage = (message) => {
+    setAdditionalMessage(message);
+  };
+
+  const extractPlaces = (text) => {
+    const placesRegex = /Places to Visit:\s*([\s\S]*?)(?=\n\n|$)/g;
+    const placeRegex = /- ([^\n]+)/g;
+  
+    const places = [];
+    let match;
+  
+    while ((match = placesRegex.exec(text)) !== null) {
+      const placeMatches = match[1].match(placeRegex);
+      if (placeMatches) {
+        const placeList = placeMatches.map(place => place.trim().substring(2));
+        places.push(placeList);
+      }
+    }
+  
+    return places;
+  }
+
+
 
   // send message to API /api/chat endpoint
   const sendMessage = async (newMessage) => {
@@ -175,6 +201,9 @@ const useMessages = () => {
     }
 
     setIsMessageStreaming(false)
+    if(lastMessage.includes('Option')){
+      setFplaces(extractPlaces(lastMessage));
+    }
   }
 
   return {
@@ -183,6 +212,8 @@ const useMessages = () => {
     loading,
     error,
     sendMessage,
+    fplaces,
+    handleAdditionalMessage
   }
 }
 
@@ -192,18 +223,21 @@ export default function Chat() {
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const [showOptionButtons, setOptionButtons] = useState(false)
-  const { messages, isMessageStreaming, loading, error, sendMessage } = useMessages()
+  const { messages, isMessageStreaming, loading, error, sendMessage, fplaces, handleAdditionalMessage} = useMessages()
 
-  const [foundWord, setFoundWord] = useState(false); // State variable for foundWord
+  const [foundWord, setFoundWord] = useState(false); 
   const wordsToSearch = 'Option';
 
   useEffect(() => {
     if (!foundWord && messages.some((message) => message.content.includes(wordsToSearch))) {
-      console.log('FOUND OPTIONS IN RESPONSE');
+      console.log('FOUND OPTIONS IN RESPONSE')
       setOptionButtons(true)
-      setFoundWord(true); // Update the state variable to true
+      setFoundWord(true)
     }
-  }, [messages, foundWord, wordsToSearch]);
+  }, [isMessageStreaming]);
+
+  //console.log(places)
+  //messages, foundWord, wordsToSearch
 
   const handleScroll = () => {
     if (chatContainerRef.current) {
@@ -235,7 +269,6 @@ export default function Chat() {
       toast.error(error)
     }
   }, [error])
-
   return (
     <div className="flex-1 w-full border-zinc-100 bg-white overflow-hidden">
       <div
@@ -261,6 +294,8 @@ export default function Chat() {
           isLoading={loading || isMessageStreaming}
           showOptionButtons = {showOptionButtons}
           setOptionButtons = {setOptionButtons}
+          places = {fplaces}
+          handleAdditionalMessage={handleAdditionalMessage}
         />
       </div>
       <Toaster />
