@@ -1,14 +1,13 @@
 'use client'
 import React, { useState } from 'react'
 
-export default function Buttons({setOptionButtons, sendMessage, places, handleAdditionalMessage}){
+export default function Buttons({setOptionButtons, sendMessage, places, handleNamesChange}){
 
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [names, setNames] = useState([])
+    //const [names, setNames] = useState([])
     const [addresses, setAddresses] = useState([])
-    const [childVariable, setChildVariable] = useState('');
 
     const updateOptionButtons = () => {
         setOptionButtons(false);
@@ -36,24 +35,22 @@ export default function Buttons({setOptionButtons, sendMessage, places, handleAd
             });
         })).then((values) => {
             console.log(values)
-            let items = values[0].result.items;
+
+            let items = values.flatMap((value) => value.result.items)
             let names = items.map((item) => item.name);
             let addresses = items.map((item) => item.address_name);
             setData(values)
             console.log(names)
-            setNames((prevNames)=> [...prevNames, ...names])
+            //setNames((prevNames)=> [...prevNames, ...names])
+            handleNamesChange((prevNames)=> [...prevNames, ...names])
             setAddresses((prevAdaress)=> [...prevAdaress, ...addresses])
         }).catch(console.error.bind(console));
-
-        const additionalMessage = names.join(' ')
-        setChildVariable(additionalMessage);
-        handleAdditionalMessage(childVariable);
         
         await sendMessage(input);
         updateOptionButtons()
         
     }
-    // console.log(data)
+
     // console.log(names)
     // console.log(addresses)
     return (

@@ -19,7 +19,7 @@ export const initialMessages = [
 
 
 
-const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons, setOptionButtons, places, handleAdditionalMessage}) => {
+const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons, setOptionButtons, places, handleNamesChange}) => {
   const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false)
   const [question, setQuestion] = useState(null)
   const [questionError, setQuestionError] = useState(null)
@@ -62,7 +62,7 @@ const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons
           <AcademicCapIcon />
         </div> {'Generate a Sample question for me'}
       </button>):
-      (<Buttons setOptionButtons = {setOptionButtons} sendMessage = {sendMessage} places={places} handleAdditionalMessage={handleAdditionalMessage}/>)}
+      (<Buttons setOptionButtons = {setOptionButtons} sendMessage = {sendMessage} places={places} handleNamesChange={handleNamesChange}/>)}
 
       <div className="mx-2 my-4 flex-1 w-full md:mx-4 md:mb-[52px] lg:max-w-2xl xl:max-w-3xl">
         <div className="relative mx-2 flex-1 flex-col rounded-md border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] sm:mx-4">
@@ -115,11 +115,12 @@ const useMessages = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null);
   const [fplaces, setFplaces] = useState(null);
-  const [additionalMessage, setAdditionalMessage] = useState('');
+  const [names, setNames] = useState([]);
 
-  const handleAdditionalMessage = (message) => {
-    setAdditionalMessage(message);
+  const handleNamesChange = (updatedNames) => {
+    setNames(updatedNames);
   };
+
 
   const extractPlaces = (text) => {
     const placesRegex = /Places to Visit:\s*([\s\S]*?)(?=\n\n|$)/g;
@@ -213,7 +214,9 @@ const useMessages = () => {
     error,
     sendMessage,
     fplaces,
-    handleAdditionalMessage
+    setMessages,
+    handleNamesChange,
+    names
   }
 }
 
@@ -223,7 +226,7 @@ export default function Chat() {
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const [showOptionButtons, setOptionButtons] = useState(false)
-  const { messages, isMessageStreaming, loading, error, sendMessage, fplaces, handleAdditionalMessage} = useMessages()
+  const { messages, isMessageStreaming, loading, error, sendMessage, fplaces, setMessages, handleNamesChange, names} = useMessages()
 
   const [foundWord, setFoundWord] = useState(false); 
   const wordsToSearch = 'Option';
@@ -269,6 +272,18 @@ export default function Chat() {
       toast.error(error)
     }
   }, [error])
+
+  useEffect(()=>{
+    if(!showOptionButtons && names.length > 0){
+      const allNames = `'${names.join("', '")}'`
+      const additionalMessage = `Here are the places that you can visit in Almaty: ${allNames}`
+      const updatedMessages= [...messages, { role: 'assistant', content: additionalMessage}];
+      setMessages(updatedMessages)
+    }
+
+  }, [showOptionButtons, names])
+
+
   return (
     <div className="flex-1 w-full border-zinc-100 bg-white overflow-hidden">
       <div
@@ -276,7 +291,8 @@ export default function Chat() {
         className="flex-1 w-full relative max-h-[calc(100vh-4rem)] overflow-x-hidden"
         onScroll={handleScroll}
       >
-        {messages.map(({ content, role }, index) => (
+        {
+        messages.map(({ content, role }, index) => (
           <ChatLine key={index} role={role} content={content} isStreaming={index === messages.length - 1 && isMessageStreaming} />
         ))
         }
@@ -295,7 +311,7 @@ export default function Chat() {
           showOptionButtons = {showOptionButtons}
           setOptionButtons = {setOptionButtons}
           places = {fplaces}
-          handleAdditionalMessage={handleAdditionalMessage}
+          handleNamesChange = {handleNamesChange}
         />
       </div>
       <Toaster />
