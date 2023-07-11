@@ -115,7 +115,7 @@ const useMessages = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null);
   const [fplaces, setFplaces] = useState(null);
-  const [names, setNames] = useState([]);
+  const [names, setNames] = useState('');
 
   const handleNamesChange = (updatedNames) => {
     setNames(updatedNames);
@@ -263,6 +263,19 @@ export default function Chat() {
   }, [autoScrollEnabled])
   const throttledScrollDown = throttle(scrollDown, 250);
 
+//   const requestToBack = async (query) => {
+//     try {
+//         const response = await fetch(`http://localhost:8000/${query}`)
+//         const responseData = await response.json()
+//         console.log(responseData)
+//         console.log(query)
+//         return responseData
+//     }catch(error){
+//         console.log(error)
+//         throw error
+//     }
+// }
+
   useEffect(() => {
     throttledScrollDown()
   }, [messages, throttledScrollDown]);
@@ -274,9 +287,11 @@ export default function Chat() {
   }, [error])
 
   useEffect(()=>{
-    if(!showOptionButtons && names.length > 0){
-      const allNames = `'${names.join("', '")}'`
-      const additionalMessage = `Here are the places that you can visit in Almaty: ${allNames}`
+    if(!showOptionButtons && names != ''){
+      // const allNames = `'${names.join("', '")}'`
+      // const allPlaces = `'${fplaces.join(',')}'`
+      // const response = requestToBack(allPlaces)
+      const additionalMessage = `${names}`
       const updatedMessages= [...messages, { role: 'assistant', content: additionalMessage}];
       setMessages(updatedMessages)
     }

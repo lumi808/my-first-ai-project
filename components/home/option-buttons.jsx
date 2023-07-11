@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export default function Buttons({setOptionButtons, sendMessage, places, handleNamesChange}){
 
@@ -11,8 +11,7 @@ export default function Buttons({setOptionButtons, sendMessage, places, handleNa
 
     const updateOptionButtons = () => {
         setOptionButtons(false);
-      };
-
+    };
 
     const pressOption = async (input, option) => {
         const urlArray = []
@@ -29,28 +28,43 @@ export default function Buttons({setOptionButtons, sendMessage, places, handleNa
         });
      
 
-        await Promise.all(requestsArray.map((request) => {
-            return fetch(request).then((response) => {
-                return response.json();
-            }).then((data) => {
-                return data;
-            });
-        })).then((values) => {
-            console.log(values)
+        // await Promise.all(requestsArray.map((request) => {
+        //     return fetch(request).then((response) => {
+        //         return response.json();
+        //     }).then((data) => {
+        //         return data;
+        //     });
+        // })).then((values) => {
+        //     console.log(values)
 
-            let items = values.flatMap((value) => value.result.items)
-            let names = items.map((item) => item.name);
-            let addresses = items.map((item) => item.address_name);
-            setData(values)
-            console.log(names)
-            //setNames((prevNames)=> [...prevNames, ...names])
-            handleNamesChange((prevNames)=> [...prevNames, ...names])
-            setAddresses((prevAdaress)=> [...prevAdaress, ...addresses])
-        }).catch(console.error.bind(console));
+        //     let items = values.flatMap((value) => value.result.items)
+        //     let names = items.map((item) => item.name);
+        //     let addresses = items.map((item) => item.address_name);
+        //     setData(values)
+        //     console.log(names)
+        //     handleNamesChange((prevNames)=> [...prevNames, ...names])
+        //     setAddresses((prevAdaress)=> [...prevAdaress, ...addresses])
+        // }).catch(console.error.bind(console));
         
+        const response = await requestToBack(`'${option.join(', ')}'`)
+        handleNamesChange(response)
+
         await sendMessage(input);
         updateOptionButtons()
         
+    }
+
+    const requestToBack = async (query) => {
+        try {
+            const response = await fetch(`http://localhost:8000/${query}`)
+            const responseData = await response.json()
+            console.log(responseData)
+            console.log(`http://localhost:8000/${query}`)
+            return responseData
+        } catch(error) {
+            console.log(error)
+            throw error
+        }
     }
 
     // console.log(names)
