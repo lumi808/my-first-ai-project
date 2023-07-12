@@ -19,7 +19,7 @@ export const initialMessages = [
 
 
 
-const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons, setOptionButtons, places, handleNamesChange}) => {
+const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons, setOptionButtons, places, handlePlacesChange}) => {
   const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false)
   const [question, setQuestion] = useState(null)
   const [questionError, setQuestionError] = useState(null)
@@ -27,10 +27,18 @@ const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons
 
   const shouldShowLoadingIcon = loading || isGeneratingQuestion
   const inputActive = input !== '' && !shouldShowLoadingIcon
+  const sampleQuestions = [
+    `I like walking in parks, while my girlfriend enjoys restaraunts. My budget for the date is 100 dollars. We are couple.`,
+    `I enjoy active outdoor activities. My wife likes cozy places, like coffee chops with breakfasts and books. Our budget for the date is $50. We are married couple.`,
+    `I like eastern food and it would be great to visit restaurants with this type of food. My partner is Chinese food enjoyer, also she likes sports like tennis, golf. I can spend $70 for this date. We are just friends, but I want her to be my girlfriend.`,
+    `I like night clubs and bars. Girl that I like loves fancy restaurants with unusual servings. My budget is unlimited. I like her, but we are strangers.`,
+    `I love swimming. She likes breakfasts and coffee shops. My budget is pretty limited, only $30. We are engaged.`
+  ]
 
-  const generateJeopardyQuestion = async () => {
+  const generateSampleQuestion = async () => {
     setIsGeneratingQuestion(true)
-    setInput(`I like walking in parks, while my girlfriend enjoys restaraunts. My budget for the date is 100 dollars. We are couple`)
+    const randomInput = sampleQuestions[Math.floor(Math.random() * sampleQuestions.length)]
+    setInput(randomInput)
     setIsGeneratingQuestion(false)
   }
 
@@ -55,14 +63,14 @@ const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons
     <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-b from-transparent via-white to-white flex flex-col items-center clear-both">
       {!showOptionButtons ? (<button
         className="mx-auto flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black text-sm hover:opacity-50 disabled:opacity-25"
-        onClick={generateJeopardyQuestion}
+        onClick={generateSampleQuestion}
         disabled={isGeneratingQuestion}
       >
         <div className="w-4 h-4">
           <AcademicCapIcon />
         </div> {'Generate a Sample question for me'}
       </button>):
-      (<Buttons setOptionButtons = {setOptionButtons} sendMessage = {sendMessage} places={places} handleNamesChange={handleNamesChange}/>)}
+      (<Buttons setOptionButtons = {setOptionButtons} sendMessage = {sendMessage} places={places} handlePlacesChange={handlePlacesChange}/>)}
 
       <div className="mx-2 my-4 flex-1 w-full md:mx-4 md:mb-[52px] lg:max-w-2xl xl:max-w-3xl">
         <div className="relative mx-2 flex-1 flex-col rounded-md border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] sm:mx-4">
@@ -115,10 +123,10 @@ const useMessages = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null);
   const [fplaces, setFplaces] = useState(null);
-  const [names, setNames] = useState('');
+  const [placesFromOption, setPlacesFromOption] = useState('');
 
-  const handleNamesChange = (updatedNames) => {
-    setNames(updatedNames);
+  const handlePlacesChange = (updatedPlaces) => {
+    setPlacesFromOption(updatedPlaces);
   };
 
 
@@ -215,8 +223,8 @@ const useMessages = () => {
     sendMessage,
     fplaces,
     setMessages,
-    handleNamesChange,
-    names
+    handlePlacesChange,
+    placesFromOption
   }
 }
 
@@ -226,7 +234,7 @@ export default function Chat() {
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const [showOptionButtons, setOptionButtons] = useState(false)
-  const { messages, isMessageStreaming, loading, error, sendMessage, fplaces, setMessages, handleNamesChange, names} = useMessages()
+  const { messages, isMessageStreaming, loading, error, sendMessage, fplaces, setMessages, handlePlacesChange, placesFromOption} = useMessages()
 
   const [foundWord, setFoundWord] = useState(false); 
   const wordsToSearch = 'Option';
@@ -239,8 +247,6 @@ export default function Chat() {
     }
   }, [isMessageStreaming]);
 
-  //console.log(places)
-  //messages, foundWord, wordsToSearch
 
   const handleScroll = () => {
     if (chatContainerRef.current) {
@@ -263,19 +269,6 @@ export default function Chat() {
   }, [autoScrollEnabled])
   const throttledScrollDown = throttle(scrollDown, 250);
 
-//   const requestToBack = async (query) => {
-//     try {
-//         const response = await fetch(`http://localhost:8000/${query}`)
-//         const responseData = await response.json()
-//         console.log(responseData)
-//         console.log(query)
-//         return responseData
-//     }catch(error){
-//         console.log(error)
-//         throw error
-//     }
-// }
-
   useEffect(() => {
     throttledScrollDown()
   }, [messages, throttledScrollDown]);
@@ -287,16 +280,13 @@ export default function Chat() {
   }, [error])
 
   useEffect(()=>{
-    if(!showOptionButtons && names != ''){
-      // const allNames = `'${names.join("', '")}'`
-      // const allPlaces = `'${fplaces.join(',')}'`
-      // const response = requestToBack(allPlaces)
-      const additionalMessage = `${names}`
+    if(!showOptionButtons && placesFromOption != ''){
+      const additionalMessage = `${placesFromOption}`
       const updatedMessages= [...messages, { role: 'assistant', content: additionalMessage}];
       setMessages(updatedMessages)
     }
 
-  }, [showOptionButtons, names])
+  }, [showOptionButtons, placesFromOption])
 
 
   return (
@@ -313,9 +303,10 @@ export default function Chat() {
         }
 
         {loading && <LoadingChatLine />}
-
+        
+        
         <div
-          className="h-[152px] bg-white"
+          className="h-[152px] bg-white static"
           ref={messagesEndRef}
         />
         <InputMessage
@@ -326,8 +317,8 @@ export default function Chat() {
           showOptionButtons = {showOptionButtons}
           setOptionButtons = {setOptionButtons}
           places = {fplaces}
-          handleNamesChange = {handleNamesChange}
-        />
+          handlePlacesChange = {handlePlacesChange}
+        />        
       </div>
       <Toaster />
     </div>
