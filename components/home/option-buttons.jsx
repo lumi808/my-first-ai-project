@@ -1,7 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react'
+import { motion } from "framer-motion"
 
-export default function Buttons({setOptionButtons, sendMessage, places, handlePlacesChange}){
+export default function Buttons({setOptionButtons, sendMessage, places, handlePlacesChange, setFoundWord}){
 
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -12,12 +13,17 @@ export default function Buttons({setOptionButtons, sendMessage, places, handlePl
         setOptionButtons(false);
     };
 
+    const updateFoundWord = () => {
+        setFoundWord(false);
+    }
+
     const pressOption = async (input, option) => {
         const response = await requestToBack(`${option.join(', ')}`)
         handlePlacesChange(response)
 
         await sendMessage(input);
-        updateOptionButtons()
+        updateOptionButtons();
+        updateFoundWord();
     }
 
     const requestToBack = async (query) => {
@@ -55,9 +61,33 @@ export default function Buttons({setOptionButtons, sendMessage, places, handlePl
             </div>
         ):(
             <div className="flex justify-center">
-                <button type="button" onClick={() => pressOption(`Option 1`, places[0])} className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Option 1</button>
-                <button type="button" onClick={() => pressOption(`Option 2`, places[1])} className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Option 2</button>
-                <button type="button" onClick={() => pressOption(`Option 3`, places[2])} className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Option 3</button>
+                <motion.button 
+                    whileHover={{ scale: 1.1 }} 
+                    animate={{ x: [-100, 0] }}
+                    transition={{ type: 'spring', stiffness: 150, damping: 20 }}
+                    type="button" 
+                    onClick={() => pressOption(`Option 1`, places[0])} 
+                    className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >Option 1
+                </motion.button>
+
+                <motion.button 
+                    whileHover={{ scale: 1.1 }} 
+                    type="button" 
+                    onClick={() => pressOption(`Option 2`, places[1])} 
+                    className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >Option 2
+                </motion.button>
+
+                <motion.button 
+                    whileHover={{ scale: 1.1 }} 
+                    animate={{ x: [100, 0] }}
+                    transition={{ type: 'spring', stiffness: 150, damping: 20 }}
+                    type="button" 
+                    onClick={() => pressOption(`Option 3`, places[2])}
+                    className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >Option 3
+                </motion.button>
             </div>
         )
     )
