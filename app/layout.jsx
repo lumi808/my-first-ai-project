@@ -41,7 +41,7 @@ export default async function RootLayout({
     <html lang="en">
       <Script id="safari-viewport-fix">{IOS_SAFARI_VIEWPORT_UNIT_CORRECTION}</Script>
       <body className={cx(sfPro.variable, inter.variable)}>
-        <div className="fixed h-screen w-full bg-gradient-to-br from-indigo-50 via-white to-cyan-100" />
+        <div className="fixed h-screen w-full bg-gradient-to-tl from-cyan-500 via-red-100 to-rose-200" />
         <Suspense fallback="...">
           <Nav />
         </Suspense>

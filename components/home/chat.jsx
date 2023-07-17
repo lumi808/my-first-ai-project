@@ -327,8 +327,7 @@ export default function Chat() {
         ))
         }
 
-        {loading && <LoadingChatLine />}
-        
+        {loading && <LoadingChatLine />}        
         
         <div
           className="h-[152px] bg-white static"
