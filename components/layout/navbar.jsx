@@ -15,7 +15,7 @@ export default function NavBar({ session }) {
       <SignInModal />
       <div
         className={`fixed top-0 w-full ${scrolled
-          ? "border-b border-gray-200 bg-white/50 backdrop-blur-xl"
+          ? "border-b border-white-200 bg-white/50 backdrop-blur-xl"
           : "bg-white/0"
           } z-30 transition-all`}
       >
@@ -35,7 +35,7 @@ export default function NavBar({ session }) {
               <UserDropdown session={session} />
             ) : (
               <button
-                className="rounded-full border border-black bg-black p-1.5 px-4 text-sm text-white transition-all hover:bg-white hover:text-black"
+                className="rounded-full border border-black bg-black p-1.5 px-4 text-sm text-white transition-all hover:bg-rose-200 hover:text-black"
                 onClick={() => setShowSignInModal(true)}
               >
                 Sign In
