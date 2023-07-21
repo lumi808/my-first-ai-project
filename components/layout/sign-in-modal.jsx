@@ -57,8 +57,8 @@ const SignInModal = ({
                   <button
                     disabled={signInClicked}
                     className={`${signInClicked
-                      ? "cursor-not-allowed border-gray-200 bg-red-100"
-                      : "border border-gray-200 bg-red-100 text-black hover:bg-red-200"
+                      ? "cursor-not-allowed border-gray-200 bg-cyan-100"
+                      : "border border-gray-200 bg-cyan-50 text-black hover:bg-cyan-100"
                       } flex h-10 w-full items-center justify-center space-x-3 rounded-md border text-sm shadow-sm transition-all duration-75 focus:outline-none`}
                     onClick={() => {
                       setSignInClicked(true);
