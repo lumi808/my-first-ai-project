@@ -36,8 +36,8 @@ export function ChatLine({ role = 'assistant', content, isStreaming }) {
     <div
       className={
         role === 'assistant'
-          ? "w-11/12 m-auto my-2 flex justify-center rounded-[24px] backdrop-blur-3xl shadow-lg text-gray-800"
-          : "w-11/12 m-auto my-2 flex justify-center rounded-[24px] backdrop-blur-3xl shadow-lg text-gray-800"
+          ? "w-11/12 m-auto my-2 flex justify-center rounded-[24px] backdrop-blur-3xl shadow-lg text-gray-900"
+          : "w-11/12 m-auto my-2 flex justify-center rounded-[24px] backdrop-blur-3xl shadow-lg text-gray-900"
       }
     >
       <div
@@ -54,7 +54,7 @@ export function ChatLine({ role = 'assistant', content, isStreaming }) {
           }
         </div>
 
-        <div className="prose whitespace-pre-wrap flex-1">
+        <div className="prose whitespace-pre-wrap flex-1 text-gray-900">
           {formatteMessage}
         </div>
       </div>
