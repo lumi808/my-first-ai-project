@@ -30,7 +30,7 @@ export default function Buttons({setOptionButtons, sendMessage, places, handlePl
     const requestToBack = async (query) => {
         setResponseGenerating(true)
         try {
-            const response = await fetch(`http://localhost:8000/generate/`, {
+            const response = await fetch(`https://ai-date-assistant.onrender.com/generate/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
