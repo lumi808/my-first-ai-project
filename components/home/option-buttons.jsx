@@ -9,6 +9,7 @@ export default function Buttons({setOptionButtons, sendMessage, places, handlePl
     const [error, setError] = useState(null)
     const [responseGenerating, setResponseGenerating] = useState(false)
 
+    // test
     const updateOptionButtons = () => {
         setOptionButtons(false);
     };
