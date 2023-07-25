@@ -11,6 +11,9 @@ export const metadata = {
   description:
     "Meet your AI Date expert.",
   themeColor: "#FFF",
+  icons: {
+    icon: '/favicon.ico'
+  }
 };
 
 // iOS Safari viewport unit correction
