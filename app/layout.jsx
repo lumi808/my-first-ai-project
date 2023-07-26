@@ -44,11 +44,11 @@ export default async function RootLayout({
     <html lang="en">
       <Script id="safari-viewport-fix">{IOS_SAFARI_VIEWPORT_UNIT_CORRECTION}</Script>
       <body className={cx(sfPro.variable, inter.variable)}>
-        <div className="fixed h-screen w-full bg-gradient-to-tl from-cyan-200 via-red-100 to-rose-200" />
+        <div className="fixed h-full w-full bg-gradient-to-tl from-cyan-200 via-red-100 to-rose-200" />
         <Suspense fallback="...">
           <Nav />
         </Suspense>
-        <main className="flex min-h-screen w-full flex-col items-center justify-center pt-16 relative">
+        <main className="flex min-h-full w-full flex-col items-center justify-center pt-16 relative">
           {children}
         </main>
         <Analytics />
