@@ -53,26 +53,27 @@ export default function Landing() {
       <div className="relative">
         <GetStarted/>
       </div>
-      <footer className="bg-white-/50 backdrop-blur-xl rounded-lg shadow m-4">
-          <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-            <span className="text-sm text-gray-500 sm:text-center">© 2023 Date Assistant™. All Rights Reserved.
-          </span>
-          <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 sm:mt-0">
-              <li>
-                  <a href="#" className="mr-4 ml-4 hover:underline md:mr-6 ">About</a>
-              </li>
-              <li>
-                  <a href="#" className="mr-4 hover:underline md:mr-6">Privacy Policy</a>
-              </li>
-              <li>
-                  <a href="#" className="mr-4 hover:underline md:mr-6">Licensing</a>
-              </li>
-              <li>
-                  <a href="https://www.linkedin.com/in/kairatmakym/" target="_blank" rel="noopener noreferrer" className="hover:underline">Author</a>
-              </li>
-          </ul>
-          </div>
-      </footer>
+      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-b from-transparent via-white to-white flex flex-col items-center clear-both"></div>
+        <footer className="bg-white-/50 backdrop-blur-xl rounded-lg shadow m-4">
+            <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+              <span className="text-sm text-gray-500 sm:text-center">© 2023 Date Assistant™. All Rights Reserved.
+            </span>
+            <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 sm:mt-0">
+                <li>
+                    <a href="#" className="mr-4 ml-4 hover:underline md:mr-6 ">About</a>
+                </li>
+                <li>
+                    <a href="#" className="mr-4 hover:underline md:mr-6">Privacy Policy</a>
+                </li>
+                <li>
+                    <a href="#" className="mr-4 hover:underline md:mr-6">Licensing</a>
+                </li>
+                <li>
+                    <a href="https://www.linkedin.com/in/kairatmakym/" target="_blank" rel="noopener noreferrer" className="hover:underline">Author</a>
+                </li>
+            </ul>
+            </div>
+        </footer>
     </>
   )
 }
