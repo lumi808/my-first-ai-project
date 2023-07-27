@@ -18,13 +18,13 @@ export default function About() {
         viewport={{ once: false, amount: 0.25 }}
         className={`${styles.innerWidth} mx-auto ${styles.flexCenter} flex-col`}
       >
-        <TypingText title="About AI Date Assistant" textStyles="text-center" />
+        <TypingText title="About WeDate" textStyles="text-center" />
 
         <motion.p
           variants={fadeIn('up', 'tween', 0.2, 1)}
           className="mt-[8px] font-normal sm:text-[32px] text-[18px] text-center text-gray-700"
         >
-          <span className="font-extrabold text-gray-800">AI Date Assistant</span> aims to foster {' '}
+          <span className="font-extrabold text-gray-800">WeDate</span> aims to foster {' '}
           <span className="font-extrabold text-gray-800">
           love and healthy relationships
           </span>{' '}
