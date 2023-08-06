@@ -7,11 +7,24 @@ import Image from "next/image";
 import { Menu, Transition } from '@headlessui/react'
 import { Session } from "next-auth";
 import cx from 'classnames'
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n/i18n";
 
 export default function UserDropdown({ session }) {
   const { email, image } = session?.user || {};
 
   if (!email) return null;
+
+  const {t, i18n} = useTranslation();
+
+  useEffect(()=>{
+    const lng = navigator.language;
+    i18n.changeLanguage(lng)
+  }, [])
+
+  // const lng = navigator.language
+
 
   return (
     <div className="relative inline-block text-left">
@@ -45,7 +58,7 @@ export default function UserDropdown({ session }) {
                   onClick={() => signOut()}
                 >
                   <ArrowRightOnRectangleIcon className="h-4 w-4" />
-                  <p className="text-sm">Sign out</p>
+                  <p className="text-sm">{t('navbar.signout')}</p>
                 </button>
               )}
             </Menu.Item>

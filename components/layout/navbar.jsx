@@ -5,10 +5,23 @@ import Link from "next/link";
 import useScroll from "@/lib/hooks/use-scroll";
 import { useSignInModal } from "./sign-in-modal";
 import UserDropdown from "./user-dropdown";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n/i18n";
+import dynamic from 'next/dynamic'
 
 export default function NavBar({ session }) {
   const { SignInModal, setShowSignInModal } = useSignInModal();
   const scrolled = useScroll(50);
+
+  const {t, i18n} = useTranslation();
+
+  useEffect(()=>{
+    const lng = navigator.language;
+    i18n.changeLanguage(lng)
+  }, [])
+
+  // const lng = navigator.language
 
   return (
     <>
@@ -38,7 +51,7 @@ export default function NavBar({ session }) {
                 className="rounded-full border border-black bg-black p-1.5 px-4 text-sm text-white transition-all hover:bg-rose-200 hover:text-black"
                 onClick={() => setShowSignInModal(true)}
               >
-                Sign In
+                {t('navbar.signin')}
               </button>
             )}
           </div>

@@ -19,8 +19,9 @@ export default function Buttons({setOptionButtons, sendMessage, places, handlePl
     }
 
     const pressOption = async (input, option) => {
-        const response = await requestToBack(`${option.join(', ')}`)
-        handlePlacesChange(response)
+        console.log(option);
+        const response = await requestToBack(`${option.join(', ')}`);
+        handlePlacesChange(response);
 
         await sendMessage(input);
         updateOptionButtons();
@@ -45,7 +46,7 @@ export default function Buttons({setOptionButtons, sendMessage, places, handlePl
 
         } catch(error) {
             console.log(error)
-            throw error
+            setError(error)
         }
     }
 

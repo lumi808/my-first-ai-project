@@ -8,13 +8,24 @@ import {
 import { LoadingDots, Google } from "@/components/shared/icons";
 import Image from "next/image";
 import { Dialog, Transition } from '@headlessui/react'
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n/i18n";
+import dynamic from 'next/dynamic'
 
 const SignInModal = ({
   showSignInModal,
   setShowSignInModal,
 }) => {
   const [signInClicked, setSignInClicked] = useState(false);
+  const {t, i18n} = useTranslation();
 
+  useEffect(()=>{
+    const lng = navigator.language;
+    i18n.changeLanguage(lng)
+  }, [])
+
+  // const lng = navigator.language
   return (
     <Transition appear show={showSignInModal} as={Fragment}>
       <Dialog as="div" className="relative z-40" open={showSignInModal} onClose={() => setShowSignInModal(false)}>
@@ -50,7 +61,7 @@ const SignInModal = ({
                     width={20}
                     height={20}
                   />
-                  <h3 className="font-display text-2xl font-bold">Sign In</h3>
+                  <h3 className="font-display text-2xl font-bold">{t('navbar.signin')}</h3>
                 </div>
 
                 <div className="flex flex-col space-y-4 bg-red-50 px-4 py-8 md:px-16">
@@ -70,7 +81,7 @@ const SignInModal = ({
                     ) : (
                       <>
                         <Google className="h-5 w-5" />
-                        <p>Sign In with Google</p>
+                        <p>{t('navbar.signgoogle')}</p>
                       </>
                     )}
                   </button>

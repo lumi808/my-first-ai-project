@@ -6,10 +6,10 @@ import { ChatLine, LoadingChatLine } from './chat-line'
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
 import cx from 'classnames'
 import { AcademicCapIcon } from '@heroicons/react/24/outline'
-import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 import Buttons from "@/components/home/option-buttons" 
 import { motion } from "framer-motion"
+import { useTranslation } from "react-i18next";
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages = [
   {
@@ -18,22 +18,29 @@ export const initialMessages = [
   },
 ]
 
-
-
 const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons, setOptionButtons, places, handlePlacesChange, setFoundWord}) => {
   const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false)
   const [question, setQuestion] = useState(null)
   const [questionError, setQuestionError] = useState(null)
   const inputRef = useRef(null)
 
+  const {t, i18n} = useTranslation();
+
+  useEffect(()=>{
+    const lng = navigator.language;
+    i18n.changeLanguage(lng)
+  }, [])
+
+  const lng = navigator.language
+
   const shouldShowLoadingIcon = loading || isGeneratingQuestion
   const inputActive = input !== '' && !shouldShowLoadingIcon
   const sampleQuestions = [
-    `I like walking in parks, while my girlfriend enjoys restaraunts. My budget for the date is 100 dollars. We are couple.`,
-    `I enjoy active outdoor activities. My wife likes cozy places, like coffee chops with breakfasts and books. Our budget for the date is $50. We are married couple.`,
-    `I like eastern food and it would be great to visit restaurants with this type of food. My partner is Chinese food enjoyer, also she likes sports like tennis, golf. I can spend $70 for this date. We are just friends, but I want her to be my girlfriend.`,
-    `I like night clubs and bars. Girl that I like loves fancy restaurants with unusual servings. My budget is unlimited. I like her, but we are strangers.`,
-    `I love swimming. She likes breakfasts and coffee shops. My budget is pretty limited, only $30. We are engaged.`
+    t('chat.examples.first'),
+    t('chat.examples.second'),
+    t('chat.examples.third'),
+    t('chat.examples.fourth'),
+    t('chat.examples.fifth')
   ]
 
   const generateSampleQuestion = async () => {
@@ -73,7 +80,7 @@ const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons
       >
         <div className="w-4 h-4">
           <AcademicCapIcon />
-        </div> {'Generate a Sample question for me'}
+        </div> {t('chat.buttons.examplebutton')}
       </motion.button>):
       (<Buttons setOptionButtons = {setOptionButtons} sendMessage = {sendMessage} places={places} handlePlacesChange={handlePlacesChange} setFoundWord = {setFoundWord}/>)}
 
@@ -135,8 +142,8 @@ const InputMessage = ({ input, setInput, sendMessage, loading, showOptionButtons
   )
 }
 
-const useMessages = () => {
-  const [messages, setMessages] = useState(initialMessages)
+const useMessages = (initialMessage) => {
+  const [messages, setMessages] = useState(initialMessage)
   const [isMessageStreaming, setIsMessageStreaming] = useState(false);
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null);
@@ -147,9 +154,18 @@ const useMessages = () => {
     setPlacesFromOption(updatedPlaces);
   };
 
+  const isCyrillic = (text) => {
+    const cyrillicRegex = /[\u0400-\u04FF]/;
+    return cyrillicRegex.test(text);
+  }
 
   const extractPlaces = (text) => {
-    const placesRegex = /Places to Visit:\s*([\s\S]*?)(?=\n\n|$)/g;
+    let placesRegex = /Places to Visit:\s*([\s\S]*?)(?=\n\n|$)/g;
+
+    if (isCyrillic(text)){
+      placesRegex = /Места для посещения:\s*([\s\S]*?)(?=\n\n|$)/g;
+    }
+    
     const placeRegex = /- ([^\n]+)/g;
   
     const places = [];
@@ -162,7 +178,7 @@ const useMessages = () => {
         places.push(placeList);
       }
     }
-  
+    
     return places;
   }
 
@@ -247,12 +263,27 @@ const useMessages = () => {
 }
 
 export default function Chat() {
+  const {t, i18n} = useTranslation();
+
+  useEffect(()=>{
+    const lng = navigator.language;
+    i18n.changeLanguage(lng)
+  }, [])
+
+  // const lng = window.navigator.language
+
   const [input, setInput] = useState('')
   const [autoScrollEnabled, setAutoScrollEnabled] = useState(true);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const [showOptionButtons, setOptionButtons] = useState(false)
-  const { messages, isMessageStreaming, loading, error, sendMessage, fplaces, setMessages, handlePlacesChange, placesFromOption} = useMessages()
+  const initialMessage = [
+    {
+      role: 'assistant',
+      content: t('chat.firstmessage'),
+    },
+  ]
+  const { messages, isMessageStreaming, loading, error, sendMessage, fplaces, setMessages, handlePlacesChange, placesFromOption} = useMessages(initialMessage)
 
   const [foundWord, setFoundWord] = useState(false); 
   const wordsToSearch1 = ['Option 1:']
