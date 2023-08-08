@@ -14,8 +14,6 @@ import i18n from "i18n/i18n";
 export default function UserDropdown({ session }) {
   const { email, image } = session?.user || {};
 
-  if (!email) return null;
-
   const {t, i18n} = useTranslation();
 
   useEffect(()=>{
@@ -24,7 +22,7 @@ export default function UserDropdown({ session }) {
   }, [])
 
   // const lng = navigator.language
-
+  if (!email) return null;
 
   return (
     <div className="relative inline-block text-left">
